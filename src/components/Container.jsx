@@ -14,6 +14,8 @@ export default class Container extends Component{
         this.state = {
             artists: [],
             showPost: false,
+            showUpdate: false,
+            currentUpdateIndex: 0,
         }
     }
     
@@ -25,9 +27,12 @@ export default class Container extends Component{
             })
             this.setState({artists: temp})
         })
+
+        
     }
 
-    delete(value, index){
+    delete(index){
+        axios.delete(`http://localhost:4000/api/artists/${index}`, {params: {}})
     }
 
     post = (event) => {
@@ -37,11 +42,25 @@ export default class Container extends Component{
     }
 
     update = e => {
-        let properties = document.querySelectorAll('.postProp')
+
+        let wikipedia = e.target.previousSibling.value
+        let imgUrl = e.target.previousSibling.previousSibling.value
+        let name = e.target.previousSibling.previousSibling.previousSibling.value
+        let index = e.target.nextSibling.innerHTML
+
+        console.log(`wikipedia: ${wikipedia}, img url: ${imgUrl}, name: ${name}, index: ${index}`)
+
         axios.put(
-            `http://localhost:4000/api/writers/${properties[4].value}`,
-            `first_name=${properties[0].value}&last_name=${properties[1].value}&DOB=${properties[2].value}&book=${properties[3].value}&filepath=${properties[5].value}`
+            `http://localhost:4000/api/artists/${index}`,
+            `name=${name}&imgURL=${imgUrl}&wikipedia=${wikipedia}`
           )
+    }
+    
+    showUpdate(index){
+        let rights = document.querySelectorAll('.right')
+
+        if(rights[index].style.display === "flex") rights[index].style.display = "none"
+        else rights[index].style.display = "flex"
     }
 
     add = e => {
@@ -68,12 +87,26 @@ export default class Container extends Component{
                 <div className="container">
                     {this.state.artists.map((value, index) => 
                         <div className="artist" key={index}>
-                            <img src={value[2]} alt=""/>
-                            <h4>{value[1]}</h4>
-                            <a href={value[3]}>wikipedia</a>
-                            <div className="icons">
-                                <FontAwesomeIcon className="icon" icon={faTrash} />
-                                <FontAwesomeIcon className="icon" icon={faPencilAlt} />
+                            <div className="left">
+                                <img src={value[2]} alt=""/>
+                                <h4>{value[1]}</h4>
+                                <a href={value[3]}>wikipedia</a>
+                                <div className="icons">
+                                    <div>
+                                    <FontAwesomeIcon className="icon" onClick={() => this.delete(index)} icon={faTrash} />
+                                    </div>
+                                    <div>
+                                    <FontAwesomeIcon className="icon" onClick={() => this.showUpdate(index)} icon={faPencilAlt} />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="right" style={{display: 'none'}}>
+                                <input type="text" placeholder="name" className="updateProp"/>
+                                <input type="text" placeholder="img url" className="updateProp"/>
+                                <input type="text" placeholder="wikipedia" className="updateProp"/>
+                                <button onClick={this.update}>submit</button>
+                                <p style={{display: 'none'}}>{index}</p>
                             </div>
                         </div>
                     )}
