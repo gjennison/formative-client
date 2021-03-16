@@ -26,19 +26,41 @@ export default class Container extends Component{
                 temp.push(Object.values(el))
             })
             this.setState({artists: temp})
+            console.log(temp)
         })
-
         
     }
 
-    delete(index){
+    delete(index, arrayIndex){
         axios.delete(`http://localhost:4000/api/artists/${index}`, {params: {}})
+        console.log(`deleted: ${index}`)
+
+        let temp = this.state.artists
+        temp.splice(arrayIndex, 1)
+
+        this.setState({artists: temp})
     }
 
     post = (event) => {
         let props = document.querySelectorAll(".postProp")
 
-        axios.post('http://localhost:4000/api/artists', `name=${props[0].value}&imgURL=${props[1].value}&wikipedia=${props[2].value}`)
+        let highest = 0;
+        for (let index = 0; index < this.state.artists.length; index++) {
+            const element = this.state.artists[index];
+            if(parseInt(element[4]) > highest) highest = parseInt(element[4])
+        }
+        highest++
+
+        axios.post('http://localhost:4000/api/artists', `name=${props[0].value}&imgURL=${props[1].value}&wikipedia=${props[2].value}&id=${highest}`)
+
+        let temp = this.state.artists
+        temp.push(["", props[0].value, props[1].value, props[2].value, highest])
+        this.setState({artists: temp})
+
+        for (let index = 0; index < props.length; index++) {
+            let element = props[index];
+            element.value = ""
+        }
     }
 
     update = e => {
@@ -54,6 +76,24 @@ export default class Container extends Component{
             `http://localhost:4000/api/artists/${index}`,
             `name=${name}&imgURL=${imgUrl}&wikipedia=${wikipedia}`
           )
+
+        let temp = this.state.artists
+
+        for (let x = 0; x < temp.length; x++) {
+            let element = temp[x];
+            if(element[4] === index) {
+                element[1] = name
+                element[2] = imgUrl
+                element[3] = wikipedia
+
+                temp[x] = element
+                console.log(temp)
+                console.log(element)
+            }
+            // element is the updated element in the artists array
+            // now need to update the artists array to include the new element
+            this.setState({artists: temp})
+        }
     }
     
     showUpdate(index){
@@ -93,7 +133,7 @@ export default class Container extends Component{
                                 <a href={value[3]}>wikipedia</a>
                                 <div className="icons">
                                     <div>
-                                    <FontAwesomeIcon className="icon" onClick={() => this.delete(index)} icon={faTrash} />
+                                    <FontAwesomeIcon className="icon" onClick={() => this.delete(value[4], index)} icon={faTrash} />
                                     </div>
                                     <div>
                                     <FontAwesomeIcon className="icon" onClick={() => this.showUpdate(index)} icon={faPencilAlt} />
@@ -106,7 +146,7 @@ export default class Container extends Component{
                                 <input type="text" placeholder="img url" className="updateProp"/>
                                 <input type="text" placeholder="wikipedia" className="updateProp"/>
                                 <button onClick={this.update}>submit</button>
-                                <p style={{display: 'none'}}>{index}</p>
+                                <p style={{display: 'none'}}>{value[4]}</p>
                             </div>
                         </div>
                     )}
