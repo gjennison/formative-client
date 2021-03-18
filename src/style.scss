@@ -1,6 +1,9 @@
+$blackColor: #4e4e4e;
+
 body {
-    background: linear-gradient(270deg, #23bb94, #e3ac00);
-    background-size: 400% 400%;
+    // background: linear-gradient(270deg, #23bb94, #e3ac00);
+    // background-size: 400% 400%;
+    color: $blackColor;
 
     -webkit-animation: AnimationName 9s ease infinite;
     -moz-animation: AnimationName 9s ease infinite;
@@ -23,20 +26,61 @@ body {
     100%{background-position:0% 50%}
 }
 
+
+@media screen and (min-width: 1000px){
+    .container{
+        grid-template-columns: auto auto;
+        margin-left: 15%;
+        margin-right: 15%;
+    }
+}
+
+@media screen and (min-width: 1200px){
+    .container{
+        grid-template-columns: auto auto auto;
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+}
+
+@media screen and (min-width: 1400px){
+    .container{
+        grid-template-columns: auto auto auto;
+        margin-left: 15%;
+        margin-right: 15%;
+    }
+}
 .container{
     display: grid;
-    grid-template-columns: auto auto auto;
     margin-top: 40px;
     .artist{
+        margin-top: 40px;
+        position: relative;
         justify-self: center;
         align-self: center;
         padding: 8px;
         border: 1px solid grey;
         background-color: rgba(255,255,255,0.2);
-        border-radius: 16px;
+        border-radius: 8px;
         img{
-            width: 300px;
+            width: 280px;
+            height: 340px;
+            object-fit: cover;
             border-radius: 16px;
+        }
+        p{
+            color: grey;
+            font-style: italic;
+            padding: 8px;
+        }
+        button{
+            cursor: pointer;
+            width: 90%;
+            padding: 8px;
+
+            &:hover{
+                // background-color: rgb(100,100,200);
+            }
         }
     }
 
@@ -56,10 +100,6 @@ body {
     }
 }
 
-.artist{
-    position: relative;
-}
-
 .icons{
     position: absolute;
     display: flex;
@@ -71,11 +111,13 @@ body {
 }
 
 .icon, path{
-    fill: rgba(255,255,255,0.8);
+    // fill: rgba(255,255,255,0.8);
+    fill: white;
     font-size: 2em;
     cursor: pointer;
+    transition: fill 0.2s;
     &:hover{
-        fill: #FFE79E;
+        fill: rgba(100,100,200,0.8);
     }
 }
 
@@ -104,3 +146,232 @@ body {
         cursor: pointer;
     }
 }
+
+header{
+    path{
+        // fill: rgb(100,100,200)
+        fill: $blackColor;
+    }
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    margin-left: 40px;
+    margin-right: 40px;
+    h1{
+        display: flex;
+        align-items: center;
+        div:last-child{
+            color: $blackColor;
+            border: 1px solid $blackColor;
+            border-radius: 2px;
+            padding: 4px;
+        }
+    }
+
+    #addArtist{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 8px;
+        cursor: pointer;
+
+        border-radius: 16px;
+        transition: background-color 0.2s;
+
+        &:hover{
+            background-color: rgba(180,180,180,0.3);
+        }
+    }
+}
+
+// .overlay{
+//     position: fixed;
+//     top: 0;
+//     left: 0;
+//     width: 100%;
+//     height: 100%;
+// }
+
+.artistModal{
+    .artistContent{
+        position: relative;
+        #closeAddArtist{
+            position: absolute;
+            right: 12px;
+            align-self: flex-end;
+            font-size: 1.5em;
+        }
+
+        h2{
+            font-weight: normal;
+        }
+
+        .artist{
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 8px;
+
+            border-color: rgba(100,100,100,0.5);
+            .addImage{
+                width: 280px;
+                height: 340px;
+                background-color: rgba(100,100,200,0.4);
+                border-radius: 4px;
+                margin-bottom: 16px;
+
+                transition: background-color 0.2s;
+                cursor: pointer;
+
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                
+                path{
+                    fill: white;
+                }
+                
+                p{
+                    font-style: normal;
+                    color: white;
+                }
+
+                p:last-child{
+                    display: none;
+                }
+                
+                overflow: hidden;
+                &:hover{
+                    background-color: rgba(100,100,100,0.4);
+                }
+            }
+            input{
+                background-color: rgba(0,0,0,0);
+                outline: none;
+                border: none;
+                border-bottom: 1px solid rgba(100,100,100,0.9);
+                padding: 2px;
+                margin: 6px;
+                font-size: 1.05em;
+                width: 95%;
+            }
+            button{
+                margin-top: 32px;
+                margin-bottom: 16px;
+                width: 80%;
+                background-color: rgba(100,100,200,0.4);
+                transition: background-color 0.2s;
+                border: none;
+                outline: none;
+                &:hover{
+                    background-color: rgba(200,200,200,0.6);
+                }
+            }
+        }
+    }
+}
+
+.deleteModal, .artistModal, .updateModal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(100,100,100,0.4);
+}
+
+.deleteContent, .artistContent, .updateContent{
+    background-color: rgb(240,240,240);
+    padding: 48px;
+    padding-top: 10px;
+    border-radius: 4px;
+
+    display: flex;
+    flex-direction: column;
+
+    .artist{
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 8px;
+
+        border-color: rgba(100,100,100,0.5);
+        input{
+            background-color: rgba(0,0,0,0);
+            outline: none;
+            border: none;
+            border-bottom: 1px solid rgba(100,100,100,0.9);
+            padding: 2px;
+            margin: 6px;
+            font-size: 1.05em;
+            width: 95%;
+        }
+        button{
+            margin-top: 32px;
+            margin-bottom: 16px;
+            width: 80%;
+            background-color: rgba(100,100,200,0.4);
+            transition: background-color 0.2s;
+            border: none;
+            outline: none;
+            &:hover{
+                background-color: rgba(200,200,200,0.6);
+            }
+        }
+    }
+}
+
+.updateModal{
+    .updateContent{
+        position: relative;
+        #closeUpdateArtist{
+            position: absolute;
+            right: 12px;
+            align-self: flex-end;
+            font-size: 1.5em;
+
+            path{
+                fill: rgb(100,100,200);
+            }
+        }
+    }
+}
+
+.deleteModal{
+    .deleteContent{
+        .deleteIcons{
+            display: flex;
+            justify-content: space-around;
+            font-size: 2.4em;
+
+            div:first-child{
+                path{
+                    fill: rgb(200,100,100);
+                }
+            }
+            
+            div:last-child{
+                path{
+                    fill: rgb(100,200,100)
+                }
+            }
+        }
+    }
+}
+
+// .updateModal{
+//     .updateContent{
+//         .artist{
+//             input{
+//                 width: 90%;
+//             }
+//         }
+//     }
+// }
