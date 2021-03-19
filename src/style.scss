@@ -290,6 +290,10 @@ header{
             justify-content: space-around;
             font-size: 2.4em;
 
+            div{
+                cursor: pointer;
+            }
+
             div:first-child{
                 path{
                     fill: rgb(200,100,100);

@@ -7,6 +7,7 @@ import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import Add from './Modals/Add';
+import Update from './Modals/Update';
 
 export default class Container extends Component{
     constructor(props){
@@ -19,7 +20,7 @@ export default class Container extends Component{
             currentUpdateIndex: 0,
             currentUpdateIMGURL: "",
             currentAddArtistIMGURL: "",
-            currentDeleteIndex: 0,
+            currentDeleteID: 0,
             currentDeleteArrayIndex: 0,
         }
     }
@@ -36,9 +37,9 @@ export default class Container extends Component{
         
     }
 
-    delete(index, arrayIndex){
+    delete(id, arrayIndex){
         
-        this.setState({currentDeleteIndex: index, currentDeleteArrayIndex: arrayIndex})
+        this.setState({currentDeleteID: id, currentDeleteArrayIndex: arrayIndex})
         
         let deleteModal = document.querySelector('.deleteModal')
         deleteModal.style.display = "flex"
@@ -55,8 +56,8 @@ export default class Container extends Component{
     }
     
     confirmDelete = e => {
-        axios.delete(`http://localhost:4000/api/artists/${this.state.currentDeleteIndex}`, {params: {}})
-        console.log(`deleted: ${this.currentDeleteIndex}`)
+        axios.delete(`http://localhost:4000/api/artists/${this.state.currentDeleteID}`, {params: {}})
+        console.log(`deleted: ${this.state.currentDeleteID}`)
         
         let temp = this.state.artists
         temp.splice(this.state.currentDeleteArrayIndex, 1)
@@ -64,31 +65,6 @@ export default class Container extends Component{
         this.setState({artists: temp})
 
         this.closeDeleteModal();
-    }
-
-    post = (event) => {
-        let props = document.querySelectorAll(".postArtistprop")
-
-        let highest = 0;
-        for (let index = 0; index < this.state.artists.length; index++) {
-            const element = this.state.artists[index];
-            if(parseInt(element[4]) > highest) highest = parseInt(element[4])
-        }
-        highest++
-
-        axios.post('http://localhost:4000/api/artists', `name=${props[0].value}&imgURL=${this.state.currentAddArtistIMGURL}&wikipedia=${props[2].value}&id=${highest}&artwork=${props[1].value}`)
-
-        let temp = this.state.artists
-        temp.push(["", props[0].value, this.state.currentAddArtistIMGURL, props[2].value, highest, props[1].value])
-        this.setState({artists: temp})
-
-        for (let index = 0; index < props.length; index++) {
-            let element = props[index];
-            element.value = ""
-        }
-
-        let addModal = document.querySelector('.addModal')
-        addModal.style.display = "none"
     }
 
     update = e => {
@@ -154,15 +130,6 @@ export default class Container extends Component{
         addModal.style.display = "flex"
     }
 
-    hideAddModal = e => {
-        let addModal = document.querySelector('.addModal')
-        if(e.target === addModal) addModal.style.display = "none"
-    }
-
-    hideAddModalX = e => {
-        document.querySelector('.addModal').style.display = "none"
-    }
-
     hideUpdateModal = e => {
         let updateModal = document.querySelector('.updateModal')
         if(e.target === updateModal) updateModal.style.display = "none"
@@ -170,13 +137,6 @@ export default class Container extends Component{
 
     hideUpdateModalX = e => {
         document.querySelector('.updateModal').style.display = "none"
-    }
-
-    addImage = e => {
-        let p2 = document.querySelector('.addImage p:last-child')
-        p2.style.display = "block"
-
-        this.setState({currentAddArtistIMGURL: prompt('enter image URL')})
     }
 
     addCallbackFunction = (childData) => {
@@ -196,6 +156,7 @@ export default class Container extends Component{
                         <p>add an artist</p>
                     </div>
                 </header>
+
                 <div className="container">
                     {this.state.artists.map((value, index) => 
                         <div className="artist" key={index}>
@@ -216,26 +177,6 @@ export default class Container extends Component{
                         </div>
                     )}
 
-                    {/* <div className="addModal modal" onClick={this.hideAddModal} style={{display: 'none'}}>
-                        <div className="addContent modal-content">
-                            <div className="modal-close-icon" onClick={this.hideAddModalX}>
-                                <FontAwesomeIcon className="modal-close-icon" icon={faTimesCircle}/>
-                            </div>
-                            <h2>Add an Artist</h2>
-                            <div className="artist">
-                                <div className="addImage" onClick={this.addImage}>
-                                    <FontAwesomeIcon className="icon" icon={faPlusCircle}/>
-                                    <p>Add Image</p>
-                                    <p>{this.state.currentAddArtistIMGURL}</p>
-                                </div>
-                                <input className="postArtistprop" type="text" placeholder="Name"/>
-                                <input className="postArtistprop" type="text" placeholder="Artwork title"/>
-                                <input className="postArtistprop" type="text" placeholder="Wikipedia"/>
-                                <button onClick={this.post}>submit</button>
-                            </div>
-                        </div>
-                    </div> */}
-
                     <div className="deleteModal modal" onClick={this.closeDeleteModalGreySpaceClick} style={{display: 'none'}}>
                         <div className="deleteContent modal-content">
                             <p>Are you sure you want to remove this artist?</p>
@@ -251,9 +192,9 @@ export default class Container extends Component{
                         </div>
                     </div>
 
-                    <div className="updateModal modal" onClick={this.hideUpdateModalX} style={{display: 'none'}}>
+                    <div className="updateModal modal" onClick={this.hideUpdateModal} style={{display: 'none'}}>
                         <div className="updateContent modal-content">
-                            <div className="modal-close-icon" onClick={this.hideUpdateModal}>
+                            <div className="modal-close-icon" onClick={this.hideUpdateModalX}>
                                 <FontAwesomeIcon className="modal-close-icon" icon={faTimesCircle}/>
                             </div>
                             <h2>Edit Info</h2>
@@ -268,6 +209,7 @@ export default class Container extends Component{
                     </div>
 
                     <Add parentCallback = {this.addCallbackFunction} artists={this.state.artists} currentAddArtistIMGURL={this.state.currentAddArtistIMGURL}/>
+                    {/* <Update artists={this.state.artists} currentUpdateIMG */}
                 </div>
             </React.Fragment>
         )

@@ -18,7 +18,7 @@ export default class Add extends Component {
         this.setState({artists: this.props.artists})
         console.log(this.state.artists)
     }
-    
+
     hideAddModal = e => {
         let addModal = document.querySelector('.addModal')
         if(e.target === addModal) addModal.style.display = "none"
@@ -29,10 +29,12 @@ export default class Add extends Component {
     }
 
     addImage = e => {
-        let p2 = document.querySelector('.addImage p:last-child')
-        p2.style.display = "block"
+        let promptForUrl = prompt('enter image URL')
+        this.setState({currentAddArtistIMGURL: promptForUrl})
 
-        this.setState({currentAddArtistIMGURL: prompt('enter image URL')})
+        let addImageDiv = document.querySelector('.addImage')
+
+        addImageDiv.innerHTML = `<img src=${promptForUrl}></img>`
     }
 
     post = (event) => {
