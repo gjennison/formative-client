@@ -1,9 +1,12 @@
 $blackColor: #4e4e4e;
+$primary: #4e4e4e;
+$secondary: rgb(100,100,200);
+$secondary-opaque: rgba(100,100,200,0.2);
+$light-grey: rgba(200,200,200,0.6);
 
 body {
-    // background: linear-gradient(270deg, #23bb94, #e3ac00);
-    // background-size: 400% 400%;
-    color: $blackColor;
+    background-color: rgb(242,242,242);
+    color: $primary;
 
     -webkit-animation: AnimationName 9s ease infinite;
     -moz-animation: AnimationName 9s ease infinite;
@@ -77,30 +80,17 @@ body {
             cursor: pointer;
             width: 90%;
             padding: 8px;
+            outline: none;
+            border: 1px solid grey;
 
             &:hover{
-                // background-color: rgb(100,100,200);
+                background-color: $secondary-opaque;
             }
         }
     }
-
-    #add{
-        &:hover{
-            opacity: 0.6;
-            cursor: pointer;
-        }
-    }
 }
 
-.post{
-    display: flex;
-    flex-direction: column;
-    input{
-        margin: 8px;
-    }
-}
-
-.icons{
+.gallery-icons{
     position: absolute;
     display: flex;
     justify-content: space-between;
@@ -108,48 +98,36 @@ body {
     margin-left: 5%;
     top: 20px;
     left: 0px;
+    div{
+        background-color: rgba(255,255,255,0.05);
+        padding: 4px;
+        border-radius: 20px;
+        path{
+            fill: white;
+            transition: fill 0.1s;
+        }
+        &:hover{
+            path{
+                fill: $secondary;
+            }
+        }
+    }
+
 }
 
-.icon, path{
-    // fill: rgba(255,255,255,0.8);
-    fill: white;
+.icon{
+    // fill: white;
     font-size: 2em;
     cursor: pointer;
-    transition: fill 0.2s;
+    transition: fill 0.1s;
     &:hover{
-        fill: rgba(100,100,200,0.8);
+        fill: rgba(200,100,200,1);
     }
 }
 
-.right, .post{
-    display: flex;
-    flex-direction: column;
-    margin-top: 4px;
-
-    input{
-        margin: 2px;
-        font-size: 1.1em;
-        outline: none;
-        background-color: rgba(255,255,255,0.1);
-        border: none;
-        border-bottom: 1px solid purple;
-        color: rgba(100,0,100,1);
-    }
-
-    button{
-        margin-top: 4px;
-        color: white;
-        font-weight: bold;
-        padding: 4px;
-        background-color: rgba(0,0,0,0.2);
-        border: none;
-        cursor: pointer;
-    }
-}
-
+// HEADER
 header{
     path{
-        // fill: rgb(100,100,200)
         fill: $blackColor;
     }
     display: flex;
@@ -185,40 +163,13 @@ header{
     }
 }
 
-// .overlay{
-//     position: fixed;
-//     top: 0;
-//     left: 0;
-//     width: 100%;
-//     height: 100%;
-// }
-
-.artistModal{
-    .artistContent{
-        position: relative;
-        #closeAddArtist{
-            position: absolute;
-            right: 12px;
-            align-self: flex-end;
-            font-size: 1.5em;
-        }
-
-        h2{
-            font-weight: normal;
-        }
-
+.addModal{
+    .addContent{
         .artist{
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 8px;
-
-            border-color: rgba(100,100,100,0.5);
             .addImage{
                 width: 280px;
                 height: 340px;
-                background-color: rgba(100,100,200,0.4);
+                background-color: rgba(100,100,100,0.4);
                 border-radius: 4px;
                 margin-bottom: 16px;
 
@@ -245,36 +196,14 @@ header{
                 
                 overflow: hidden;
                 &:hover{
-                    background-color: rgba(100,100,100,0.4);
-                }
-            }
-            input{
-                background-color: rgba(0,0,0,0);
-                outline: none;
-                border: none;
-                border-bottom: 1px solid rgba(100,100,100,0.9);
-                padding: 2px;
-                margin: 6px;
-                font-size: 1.05em;
-                width: 95%;
-            }
-            button{
-                margin-top: 32px;
-                margin-bottom: 16px;
-                width: 80%;
-                background-color: rgba(100,100,200,0.4);
-                transition: background-color 0.2s;
-                border: none;
-                outline: none;
-                &:hover{
-                    background-color: rgba(200,200,200,0.6);
+                    background-color: rgba(100,100,200,0.4);
                 }
             }
         }
     }
 }
 
-.deleteModal, .artistModal, .updateModal{
+.modal{
     position: fixed;
     top: 0;
     left: 0;
@@ -284,61 +213,71 @@ header{
     justify-content: center;
     align-items: center;
     background-color: rgba(100,100,100,0.4);
-}
 
-.deleteContent, .artistContent, .updateContent{
-    background-color: rgb(240,240,240);
-    padding: 48px;
-    padding-top: 10px;
-    border-radius: 4px;
-
-    display: flex;
-    flex-direction: column;
-
-    .artist{
-        padding: 12px;
+    .modal-content{
+        background-color: rgb(240,240,240);
+        padding: 48px;
+        padding-top: 10px;
+        border-radius: 4px;
+    
         display: flex;
         flex-direction: column;
-        align-items: center;
-        margin-top: 8px;
 
-        border-color: rgba(100,100,100,0.5);
-        input{
-            background-color: rgba(0,0,0,0);
-            outline: none;
-            border: none;
-            border-bottom: 1px solid rgba(100,100,100,0.9);
-            padding: 2px;
-            margin: 6px;
-            font-size: 1.05em;
-            width: 95%;
-        }
-        button{
-            margin-top: 32px;
-            margin-bottom: 16px;
-            width: 80%;
-            background-color: rgba(100,100,200,0.4);
-            transition: background-color 0.2s;
-            border: none;
-            outline: none;
-            &:hover{
-                background-color: rgba(200,200,200,0.6);
-            }
-        }
-    }
-}
-
-.updateModal{
-    .updateContent{
         position: relative;
-        #closeUpdateArtist{
+
+        h2{
+            font-weight: normal;
+        }
+
+        .modal-close-icon{
             position: absolute;
             right: 12px;
             align-self: flex-end;
-            font-size: 1.5em;
-
+            cursor: pointer;
+            font-size: 1.25em;
             path{
-                fill: rgb(100,100,200);
+                fill: $primary;
+            }
+            &:hover{
+                path{
+                    fill: $secondary;
+                }
+            }
+        }
+    
+        .artist{
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 8px;
+    
+            border-color: rgba(100,100,100,0.5);
+            input{
+                background-color: rgba(0,0,0,0);
+                outline: none;
+                border: none;
+                border-bottom: 1px solid rgba(100,100,100,0.9);
+                padding: 2px;
+                margin: 6px;
+                font-size: 1.05em;
+                width: 95%;
+
+                &:focus{
+                    border-bottom: 1px solid $secondary;
+                }
+            }
+            button{
+                margin-top: 32px;
+                margin-bottom: 16px;
+                width: 80%;
+                transition: background-color 0.2s;
+                border: none;
+                outline: none;
+                background-color: $light-grey;
+                &:hover{
+                    background-color: rgba(100,100,200,0.4);
+                }
             }
         }
     }
@@ -365,13 +304,3 @@ header{
         }
     }
 }
-
-// .updateModal{
-//     .updateContent{
-//         .artist{
-//             input{
-//                 width: 90%;
-//             }
-//         }
-//     }
-// }

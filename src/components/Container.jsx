@@ -6,6 +6,7 @@ import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
+import Add from './Modals/Add';
 
 export default class Container extends Component{
     constructor(props){
@@ -86,33 +87,14 @@ export default class Container extends Component{
             element.value = ""
         }
 
-        let artistModal = document.querySelector('.artistModal')
-        artistModal.style.display = "none"
-
-        // let props = document.querySelectorAll(".postProp")
-
-        // let highest = 0;
-        // for (let index = 0; index < this.state.artists.length; index++) {
-        //     const element = this.state.artists[index];
-        //     if(parseInt(element[4]) > highest) highest = parseInt(element[4])
-        // }
-        // highest++
-
-        // axios.post('http://localhost:4000/api/artists', `name=${props[0].value}&imgURL=${props[1].value}&wikipedia=${props[2].value}&id=${highest}`)
-
-        // let temp = this.state.artists
-        // temp.push(["", props[0].value, props[1].value, props[2].value, highest])
-        // this.setState({artists: temp})
-
-        // for (let index = 0; index < props.length; index++) {
-        //     let element = props[index];
-        //     element.value = ""
-        // }
+        let addModal = document.querySelector('.addModal')
+        addModal.style.display = "none"
     }
 
     update = e => {
 
-        let props = document.querySelectorAll('.updateArtistProp')
+        let props = document.querySelectorAll('.updateArtistprop')
+        console.log(props)
 
         let name = props[0].value
         let title = props[1].value
@@ -123,7 +105,7 @@ export default class Container extends Component{
         console.log(`wikipedia: ${wikipedia}, img url: ${imgUrl}, name: ${name}, index: ${index}`)
 
         axios.put(
-            `http://localhost:4000/api/artists/${this.state.currentUpdateIndex}`,
+            `http://localhost:4000/api/artists/${index}`,
             `name=${name}&imgURL=${imgUrl}&wikipedia=${wikipedia}&artwork=${title}`
           )
 
@@ -145,48 +127,19 @@ export default class Container extends Component{
             // now need to update the artists array to include the new element
             this.setState({artists: temp})
         }
-        // let wikipedia = e.target.previousSibling.value
-        // let imgUrl = e.target.previousSibling.previousSibling.value
-        // let name = e.target.previousSibling.previousSibling.previousSibling.value
-        // let index = e.target.nextSibling.innerHTML
-
-        // console.log(`wikipedia: ${wikipedia}, img url: ${imgUrl}, name: ${name}, index: ${index}`)
-
-        // axios.put(
-        //     `http://localhost:4000/api/artists/${index}`,
-        //     `name=${name}&imgURL=${imgUrl}&wikipedia=${wikipedia}`
-        //   )
-
-        // let temp = this.state.artists
-
-        // for (let x = 0; x < temp.length; x++) {
-        //     let element = temp[x];
-        //     if(element[4] === index) {
-        //         element[1] = name
-        //         element[2] = imgUrl
-        //         element[3] = wikipedia
-
-        //         temp[x] = element
-        //         console.log(temp)
-        //         console.log(element)
-        //     }
-        //     // element is the updated element in the artists array
-        //     // now need to update the artists array to include the new element
-        //     this.setState({artists: temp})
-        // }
     }
     
     showUpdate(index){
-        // let rights = document.querySelectorAll('.right')
-
-        // if(rights[index].style.display === "flex") rights[index].style.display = "none"
-        // else rights[index].style.display = "flex"
-
         this.setState({currentUpdateIMG: this.state.artists[index][2], currentUpdateIndex: this.state.artists[index][4]})
 
         let updateModal = document.querySelector('.updateModal')
-
         updateModal.style.display = "flex"
+
+        let props = document.querySelectorAll('.updateArtistprop')
+
+        props[0].value = this.state.artists[index][1]
+        props[1].value = this.state.artists[index][5]
+        props[2].value = this.state.artists[index][3]
     }
 
     updateIMG = e => {
@@ -197,24 +150,26 @@ export default class Container extends Component{
         if(this.state.showPost) this.setState({showPost: false})
         else this.setState({showPost: true})
 
-        // let overlay = document.querySelector('.overlay')
-        // overlay.style.display = "block"
-
-        let artistModal = document.querySelector('.artistModal')
-        artistModal.style.display = "flex"
+        let addModal = document.querySelector('.addModal')
+        addModal.style.display = "flex"
     }
 
-    hideOverlay = e => {
-        // let overlay = document.querySelector('.overlay')
-        // overlay.style.display = "none"
+    hideAddModal = e => {
+        let addModal = document.querySelector('.addModal')
+        if(e.target === addModal) addModal.style.display = "none"
+    }
 
-        let artistModal = document.querySelector('.artistModal')
-        if(e.target === artistModal) artistModal.style.display = "none"
+    hideAddModalX = e => {
+        document.querySelector('.addModal').style.display = "none"
     }
 
     hideUpdateModal = e => {
         let updateModal = document.querySelector('.updateModal')
         if(e.target === updateModal) updateModal.style.display = "none"
+    }
+
+    hideUpdateModalX = e => {
+        document.querySelector('.updateModal').style.display = "none"
     }
 
     addImage = e => {
@@ -223,21 +178,12 @@ export default class Container extends Component{
 
         this.setState({currentAddArtistIMGURL: prompt('enter image URL')})
     }
+
+    addCallbackFunction = (childData) => {
+        this.setState({artists: childData})
+    }
     
     render(){
-        let post = ""
-        let status = <FontAwesomeIcon className="icon" icon={faPlusCircle} />
-        if(this.state.showPost) {
-            
-            post = <div className="post">
-                <input type="text" placeholder="name" className="postProp"/>
-                <input type="text" placeholder="img url" className="postProp"/>
-                <input type="text" placeholder="wikipedia" className="postProp"/>
-                <button onClick={this.post}>submit</button>
-            </div>
-            status = <FontAwesomeIcon className="icon" icon={faTimesCircle} />
-        }
-
         return(
             <React.Fragment>
                 <header>
@@ -253,34 +199,28 @@ export default class Container extends Component{
                 <div className="container">
                     {this.state.artists.map((value, index) => 
                         <div className="artist" key={index}>
-                            <div className="left">
+                            <div>
                                 <img src={value[2]} alt=""/>
                                 <h2>{value[1]}</h2>
                                 <p>(Work Above: "{value[5]}")</p>
                                 <a href={value[3]}><button><strong>Find out more</strong></button></a>
-                                <div className="icons">
-                                    <div>
-                                        <FontAwesomeIcon className="icon" onClick={() => this.delete(value[4], index)} icon={faTrash} />
+                                <div className="gallery-icons">
+                                    <div onClick={() => this.delete(value[4], index)}>
+                                        <FontAwesomeIcon className="icon" icon={faTrash} />
                                     </div>
-                                    <div>
-                                        <FontAwesomeIcon className="icon" onClick={() => this.showUpdate(index)} icon={faPencilAlt} />
+                                    <div onClick={() => this.showUpdate(index)}>
+                                        <FontAwesomeIcon className="icon" icon={faPencilAlt} />
                                     </div>
                                 </div>
-                            </div>
-
-                            <div className="right" style={{display: 'none'}}>
-                                <input type="text" placeholder="name" className="updateProp"/>
-                                <input type="text" placeholder="img url" className="updateProp"/>
-                                <input type="text" placeholder="wikipedia" className="updateProp"/>
-                                <button onClick={this.update}>submit</button>
-                                <p style={{display: 'none'}}>{value[4]}</p>
                             </div>
                         </div>
                     )}
 
-                    <div className="artistModal" onClick={this.hideOverlay} style={{display: 'none'}}>
-                        <div className="artistContent">
-                            <FontAwesomeIcon id="closeAddArtist" icon={faTimesCircle}/>
+                    {/* <div className="addModal modal" onClick={this.hideAddModal} style={{display: 'none'}}>
+                        <div className="addContent modal-content">
+                            <div className="modal-close-icon" onClick={this.hideAddModalX}>
+                                <FontAwesomeIcon className="modal-close-icon" icon={faTimesCircle}/>
+                            </div>
                             <h2>Add an Artist</h2>
                             <div className="artist">
                                 <div className="addImage" onClick={this.addImage}>
@@ -294,15 +234,15 @@ export default class Container extends Component{
                                 <button onClick={this.post}>submit</button>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
-                    <div className="deleteModal" onClick={this.closeDeleteModalGreySpaceClick} style={{display: 'none'}}>
-                        <div className="deleteContent">
+                    <div className="deleteModal modal" onClick={this.closeDeleteModalGreySpaceClick} style={{display: 'none'}}>
+                        <div className="deleteContent modal-content">
                             <p>Are you sure you want to remove this artist?</p>
                             <hr/>
                             <div className="deleteIcons">
                                 <div onClick={() => this.closeDeleteModal()}>
-                                <FontAwesomeIcon icon={faTimesCircle}/>
+                                <FontAwesomeIcon icon={faTimesCircle} />
                                 </div>
                                 <div onClick={this.confirmDelete}>
                                 <FontAwesomeIcon icon={faCheck}/>
@@ -311,9 +251,11 @@ export default class Container extends Component{
                         </div>
                     </div>
 
-                    <div className="updateModal" onClick={this.hideUpdateModal} style={{display: 'none'}}>
-                        <div className="updateContent">
-                            <FontAwesomeIcon id="closeUpdateArtist" icon={faTimesCircle}/>
+                    <div className="updateModal modal" onClick={this.hideUpdateModalX} style={{display: 'none'}}>
+                        <div className="updateContent modal-content">
+                            <div className="modal-close-icon" onClick={this.hideUpdateModal}>
+                                <FontAwesomeIcon className="modal-close-icon" icon={faTimesCircle}/>
+                            </div>
                             <h2>Edit Info</h2>
                             <div className="artist">
                                 <img onClick={this.updateIMG} src={this.state.currentUpdateIMG} alt=""/>
@@ -324,6 +266,8 @@ export default class Container extends Component{
                             </div>
                         </div>
                     </div>
+
+                    <Add parentCallback = {this.addCallbackFunction} artists={this.state.artists} currentAddArtistIMGURL={this.state.currentAddArtistIMGURL}/>
                 </div>
             </React.Fragment>
         )
